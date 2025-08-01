@@ -1,1 +1,78 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>M L Personal Savings</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin:0; padding:0;}
+    .container { max-width:600px; margin:30px auto; background:#fff; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); border-radius:10px;}
+    h1 { text-align:center; color:#28a745; margin-bottom:20px;}
+    input, select, button { width:100%; padding:10px; margin:6px 0; border-radius:5px; border:1px solid #ccc; font-size:16px;}
+    button { background:linear-gradient(135deg,#28a745,#218838); color:#fff; border:none; font-weight:bold; cursor:pointer; transition:0.3s;}
+    button:hover { background:linear-gradient(135deg,#218838,#1e7e34);}
+    table { width:100%; border-collapse:collapse; margin-top:20px;}
+    th, td { padding:10px; border:1px solid #ccc; text-align:left;}
+    .total { font-size:18px; font-weight:bold; color:#007bff; margin-top:15px; text-align:right;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💸 M L Personal Savings Tracker</h1>
+    <select id="month"><option value="">-- Select Month --</option>
+      <option>January</option><option>February</option><option>March</option>
+      <option>April</option><option>May</option><option>June</option>
+      <option>July</option><option>August</option><option>September</option>
+      <option>October</option><option>November</option><option>December</option>
+    </select>
+    <input type="text" id="date" placeholder="Date (e.g. 5 July)"/>
+    <input type="number" id="amount" placeholder="Amount (৳)"/>
+    <button onclick="addEntry()">➕ Add Entry</button>
+    <input type="text" id="search" placeholder="🔍 Search date..." oninput="filterEntries(this.value)"/>
+    <table id="savingsTable">
+      <thead><tr><th>Date</th><th>Amount (৳)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="total" id="totalDisplay">Total Saved: 0 ৳</div>
+    <button onclick="clearEntries()">🧹 Clear All</button>
+  </div>
+  <script>
+    let entries = [];
+    function addEntry(){
+      const m = document.getElementById("month").value;
+      const d = document.getElementById("date").value.trim();
+      const a = parseFloat(document.getElementById("amount").value);
+      if(!m){alert("Please select month."); return;}
+      if(!d){alert("Please enter date."); return;}
+      if(isNaN(a)||a<=0){alert("Enter valid amount."); return;}
+      entries.push({date: d + " " + m, amount: a});
+      document.getElementById("month").value="";
+      document.getElementById("date").value="";
+      document.getElementById("amount").value="";
+      renderTable(entries);
+    }
+    function renderTable(list){
+      const tbody = document.querySelector("#savingsTable tbody");
+      tbody.innerHTML="";
+      let total=0;
+      list.forEach(e=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML=`<td>${e.date}</td><td>${e.amount} ৳</td>`;
+        tbody.appendChild(tr);
+        total+=e.amount;
+      });
+      document.getElementById("totalDisplay").textContent=`Total Saved: ${total} ৳`;
+    }
+    function clearEntries(){
+      if(confirm("Clear all entries?")){
+        entries=[];
+        renderTable(entries);
+      }
+    }
+    function filterEntries(q){
+      renderTable(entries.filter(e=>e.date.toLowerCase().includes(q.toLowerCase())));
+    }
+  </script>
+</body>
+</html>
